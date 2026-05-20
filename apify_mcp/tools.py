@@ -17,7 +17,6 @@ def register_tools(mcp: FastMCP) -> None:
         description="List all Actors in your Apify account. Returns basic information about each Actor including ID, name, and creation date.",
     )
     async def apify_list_actors(
-        api_token: str = Field(..., description="Apify API token for authentication"),
         my_only: bool = Field(
             default=True, description="Only return Actors owned by you"
         ),
@@ -30,7 +29,7 @@ def register_tools(mcp: FastMCP) -> None:
     ) -> str:
         """List Actors from Apify account."""
         try:
-            client = ApifyClient(api_token)
+            client = ApifyClient()
             result = await client.list_actors(
                 my_only=my_only, limit=limit, offset=offset
             )
@@ -59,7 +58,6 @@ def register_tools(mcp: FastMCP) -> None:
         description="Run an Actor on Apify platform. Provide Actor ID and input data. Returns run details including run ID and default dataset ID for results.",
     )
     async def apify_run_actor(
-        api_token: str = Field(..., description="Apify API token for authentication"),
         actor_id: str = Field(
             ..., description="Actor ID to run (e.g., 'username~actor-name' or Actor ID)"
         ),
@@ -78,7 +76,7 @@ def register_tools(mcp: FastMCP) -> None:
     ) -> str:
         """Run an Actor on Apify."""
         try:
-            client = ApifyClient(api_token)
+            client = ApifyClient()
 
             # Parse input data
             try:
@@ -117,7 +115,6 @@ def register_tools(mcp: FastMCP) -> None:
         description="Get details of an Actor run including status, start time, finish time, and storage IDs.",
     )
     async def apify_get_run(
-        api_token: str = Field(..., description="Apify API token for authentication"),
         run_id: str = Field(..., description="Actor run ID"),
         wait_for_finish: int = Field(
             default=0,
@@ -128,7 +125,7 @@ def register_tools(mcp: FastMCP) -> None:
     ) -> str:
         """Get Actor run details."""
         try:
-            client = ApifyClient(api_token)
+            client = ApifyClient()
             result = await client.get_run(run_id, wait_for_finish=wait_for_finish)
 
             output = {
@@ -155,7 +152,6 @@ def register_tools(mcp: FastMCP) -> None:
         description="List recent Actor runs from your account. Can filter by status.",
     )
     async def apify_list_runs(
-        api_token: str = Field(..., description="Apify API token for authentication"),
         status: str = Field(
             default=None,
             description="Filter by status (e.g., 'SUCCEEDED', 'FAILED', 'RUNNING')",
@@ -169,7 +165,7 @@ def register_tools(mcp: FastMCP) -> None:
     ) -> str:
         """List Actor runs."""
         try:
-            client = ApifyClient(api_token)
+            client = ApifyClient()
             result = await client.list_runs(
                 status=status, limit=limit, offset=offset, desc=True
             )
@@ -200,7 +196,6 @@ def register_tools(mcp: FastMCP) -> None:
         description="Retrieve items from an Actor's default dataset. Results are the output data produced by the Actor run.",
     )
     async def apify_get_dataset_items(
-        api_token: str = Field(..., description="Apify API token for authentication"),
         dataset_id: str = Field(
             ..., description="Dataset ID (from Actor run response)"
         ),
@@ -216,7 +211,7 @@ def register_tools(mcp: FastMCP) -> None:
     ) -> str:
         """Get dataset items from Actor run."""
         try:
-            client = ApifyClient(api_token)
+            client = ApifyClient()
             items = await client.get_dataset_items(
                 dataset_id, limit=limit, offset=offset, clean=clean
             )
@@ -247,7 +242,6 @@ def register_tools(mcp: FastMCP) -> None:
         description="List Actor tasks in your account. Tasks are pre-configured Actor runs with saved input.",
     )
     async def apify_list_tasks(
-        api_token: str = Field(..., description="Apify API token for authentication"),
         limit: int = Field(
             default=100, description="Maximum number of tasks to return", ge=1, le=1000
         ),
@@ -257,7 +251,7 @@ def register_tools(mcp: FastMCP) -> None:
     ) -> str:
         """List Actor tasks."""
         try:
-            client = ApifyClient(api_token)
+            client = ApifyClient()
             result = await client.list_tasks(limit=limit, offset=offset, desc=True)
 
             output = {
@@ -292,6 +286,5 @@ def register_tools(mcp: FastMCP) -> None:
                 "status": "ok",
                 "server": "CL Apify MCP Server",
                 "type": "utility",
-                "auth_required": True,
             }
         )

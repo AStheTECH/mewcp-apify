@@ -3,6 +3,7 @@ import logging
 from typing import Any, Dict, List, Optional
 
 import httpx
+from fastmcp_credentials import get_credentials
 
 from .config import (
     APIFY_ACTORS_ENDPOINT,
@@ -19,13 +20,11 @@ logger = logging.getLogger("apify-mcp-server")
 class ApifyClient:
     """Client for Apify API v2."""
 
-    def __init__(self, api_token: str):
-        """Initialize Apify API client.
-
-        Args:
-            api_token: Apify API token for authentication
-        """
-        self.api_token = api_token
+    def __init__(self):
+        cred = get_credentials()
+        api_token = cred.fields.get("api_token")
+        if not api_token:
+            raise ValueError("No 'api_token' found in credentials")
         self.headers = {
             "Authorization": f"Bearer {api_token}",
             "Content-Type": "application/json",
